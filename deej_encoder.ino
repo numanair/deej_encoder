@@ -12,76 +12,76 @@ const int NUM_SLIDERS = 5;
 // Number of LEDs (generally same as NUM_SLIDERS):
 #define NUM_LEDS 5
 // LED control pin:
-#define DATA_PIN 7
+#define DATA_PIN 15
 CRGB leds[NUM_LEDS];
 int analogSliderValues[NUM_SLIDERS];
 // Change these pin numbers to the pins connected to your encoder.
 // Best Performance: both pins have interrupt capability
 // Good Performance: only the first pin has interrupt capability
 // Low Performance:  neither pin has interrupt capability
-Encoder knobMaster(4,11);
-Encoder knobDiscord(2,6);
-Encoder knobChrome(12,8);
-Encoder knobGaming(14,9);
-Encoder knobMusic(10,5);
+Encoder knob1(8,9);
+Encoder knob2(6,7);
+Encoder knob3(10,11);
+Encoder knob4(4,5);
+Encoder knob5(12,3);
 int Master, Discord, Chrome, Gaming, Music;
-int masterMute, discordMute, chromeMute, gamingMute, musicMute;
+int Mute1, Mute2, Mute3, Mute4, Mute5;
 int masterDebounceTime;
 // avoid using pins with LEDs attached
-//buttons: 1, A5, A2, A1, A6
-const int masterButton=1;
-const int discordButton=A5;
-const int chromeButton=A2;
-const int gamingButton=A1;
-const int musicButton=A6;
-unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-unsigned long debounceDelay = 175;    // the debounce time; increase if the output flickers
+//buttons:
+const int button1_pin=A5;
+const int button2_pin=A4;
+const int button3_pin=A3;
+const int button4_pin=A2;
+const int button5_pin=A0;
+//unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
+//unsigned long debounceDelay = 175;    // the debounce time; increase if the output flickers
 
-int masterState=0;
-int discordState=0;
-int chromeState=0;
-int gamingState=0;
-int musicState=0;
+int knob1State=0;
+int knob2State=0;
+int knob3State=0;
+int knob4State=0;
+int knob5State=0;
 
 
 void setup() {
   
-  LEDS.addLeds<WS2812,DATA_PIN,GRB>(leds,NUM_LEDS);
-	LEDS.setBrightness(150);
+  LEDS.addLeds<WS2812B,DATA_PIN,GRB>(leds,NUM_LEDS);
+	LEDS.setBrightness(5);
   
   Serial.begin(9600);
-  pinMode(masterButton, INPUT_PULLUP);
-  pinMode(discordButton, INPUT_PULLUP);
-  pinMode(chromeButton, INPUT_PULLUP);
-  pinMode(gamingButton, INPUT_PULLUP);
-  pinMode(musicButton, INPUT_PULLUP);
-  
+  pinMode(button1_pin, INPUT_PULLUP);
+  pinMode(button2_pin, INPUT_PULLUP);
+  pinMode(button3_pin, INPUT_PULLUP);
+  pinMode(button4_pin, INPUT_PULLUP);
+  pinMode(button5_pin, INPUT_PULLUP);
+
 analogSliderValues[0]  = 512;
-knobMaster.write(51);
+knob1.write(51);
 analogSliderValues[1] = 512;
-knobDiscord.write(51);
+knob2.write(51);
 analogSliderValues[2] = 512;
-knobChrome.write(51);
+knob3.write(51);
 analogSliderValues[3] = 512;
-knobGaming.write(51);
+knob4.write(51);
 analogSliderValues[4] = 512;
-knobMusic.write(51);
-masterMute=0;
-discordMute=0;
-chromeMute=0;
-gamingMute=0;
-musicMute=0;
+knob5.write(51);
+Mute1=0;
+Mute2=0;
+Mute3=0;
+Mute4=0;
+Mute5=0;
 }
 
 
 
 void loop() {
   
-  Master = knobMaster.read();
-  Discord = knobDiscord.read();
-  Chrome = knobChrome.read();
-  Gaming = knobGaming.read();
-  Music = knobMusic.read();
+  Master = knob1.read();
+  Discord = knob2.read();
+  Chrome = knob3.read();
+  Gaming = knob4.read();
+  Music = knob5.read();
 
 
 
@@ -120,59 +120,58 @@ void printSliderValues() {
   }
 }
 void checkButtons(){
-if (digitalRead(masterButton)==0 && masterState ==0){
-masterMute = !masterMute ;
-masterState =1;
+if (digitalRead(button1_pin)==0 && knob1State ==0){
+Mute1 = !Mute1 ;
+knob1State =1;
 delay(25);
 }
- if (digitalRead(masterButton)==1){
-  masterState=0;
+ if (digitalRead(button1_pin)==1){
+  knob1State=0;
  }
-if (digitalRead(discordButton)==0 && discordState ==0){
-discordMute = !discordMute ;
-discordState =1;
+if (digitalRead(button2_pin)==0 && knob2State ==0){
+Mute2 = !Mute2 ;
+knob2State =1;
 delay(25);
 }
- if (digitalRead(discordButton)==1){
-  discordState=0;
+ if (digitalRead(button2_pin)==1){
+  knob2State=0;
  }
- if (digitalRead(chromeButton)==0 && chromeState ==0){
-chromeMute = !chromeMute ;
-chromeState =1;
+ if (digitalRead(button3_pin)==0 && knob3State ==0){
+Mute3 = !Mute3 ;
+knob3State =1;
 delay(25);
 }
- if (digitalRead(chromeButton)==1){
-  chromeState=0;
+ if (digitalRead(button3_pin)==1){
+  knob3State=0;
  }
- if (digitalRead(gamingButton)==0 && gamingState ==0){
-gamingMute = !gamingMute ;
-gamingState =1;
+ if (digitalRead(button4_pin)==0 && knob4State ==0){
+Mute4 = !Mute4 ;
+knob4State =1;
 delay(25);
 }
- if (digitalRead(gamingButton)==1){
-  gamingState=0;
+ if (digitalRead(button4_pin)==1){
+  knob4State=0;
  }
- if (digitalRead(musicButton)==0 && musicState ==0){
-musicMute = !musicMute ;
-musicState =1;
+ if (digitalRead(button5_pin)==0 && knob5State ==0){
+Mute5 = !Mute5 ;
+knob5State =1;
 delay(25);
 }
- if (digitalRead(musicButton)==1){
-  musicState=0;
+ if (digitalRead(button5_pin)==1){
+  knob5State=0;
  }
 }
 void checkEncoders(){
-    if (Master > 0 && Master < 102 && masterMute==0){
+    if (Master > 0 && Master < 102 && Mute1==0){
         analogSliderValues[0]=Master*10;
         leds[4] = CRGB::Green;
     }
-    else if (masterMute==0 && (Master > 102 || Master==102)){
+    else if (Mute1==0 && (Master > 102 || Master==102)){
         analogSliderValues[0]=102*10;
-        knobMaster.write(102);
+        knob1.write(102);
         leds[4] = CRGB::Green;
-        
     }
-    else if (masterMute==1){
+    else if (Mute1==1){
       analogSliderValues[0]=0;
         leds[4] = CRGB::Red;
         
@@ -180,82 +179,82 @@ void checkEncoders(){
     
     else {
         analogSliderValues[0]=0;
-        knobMaster.write(0);
+        knob1.write(0);
         leds[4] = CRGB::Red;
         
     }
   
-    if (Discord > 0 && (Discord < 102 && discordMute==0)){
+    if (Discord > 0 && (Discord < 102 && Mute2==0)){
         analogSliderValues[1]=Discord*10;
         leds[3] = CRGB::Green;
     }
-    else if (discordMute==0 && Discord > 102 || Discord==102){
+    else if (Mute2==0 && Discord > 102 || Discord==102){
         analogSliderValues[1]=102*10;
-        knobDiscord.write(102);
+        knob2.write(102);
         leds[3] = CRGB::Green;
     }
-    else if (discordMute==1){
+    else if (Mute2==1){
         analogSliderValues[1]=0;
         leds[3] = CRGB::Red;
     }
     else {
         analogSliderValues[1]=0;
-        knobDiscord.write(0);
+        knob2.write(0);
         leds[3] = CRGB::Red;
     }
-    if (chromeMute==0 && Chrome > 0 && Chrome < 102){
+    if (Mute3==0 && Chrome > 0 && Chrome < 102){
         analogSliderValues[2]=Chrome*10;
         leds[2] = CRGB::Green;
     }
-    else if (chromeMute ==0 && (Chrome > 102 || Chrome==102)){
+    else if (Mute3 ==0 && (Chrome > 102 || Chrome==102)){
         analogSliderValues[2]=102*10;
-        knobChrome.write(102);
+        knob3.write(102);
         leds[2] = CRGB::Green;
     }
-    else if (chromeMute==1){
+    else if (Mute3==1){
         analogSliderValues[2]=0;
         leds[2] = CRGB::Red;
     }
     else {
         analogSliderValues[2]=0;
-        knobChrome.write(0);
+        knob3.write(0);
         leds[2] = CRGB::Red;
     }
-        if (gamingMute==0 && Gaming > 0 && Gaming < 102){
+        if (Mute4==0 && Gaming > 0 && Gaming < 102){
         analogSliderValues[3]=Gaming*10;
         leds[1] = CRGB::Green;
         
     }
-    else if (gamingMute==0 && (Gaming > 102 || Gaming==102)){
+    else if (Mute4==0 && (Gaming > 102 || Gaming==102)){
         analogSliderValues[3]=102*10;
-        knobGaming.write(102);
+        knob4.write(102);
         leds[1] = CRGB::Green;
     }
-    else if (gamingMute==1){
+    else if (Mute4==1){
         analogSliderValues[3]=0;
         leds[1] = CRGB::Red;
     }
     else {
         analogSliderValues[3]=0;
-        knobGaming.write(0);
+        knob4.write(0);
         leds[1] = CRGB::Red;
     }
-    if (musicMute==0 && Music > 0 && Music < 102){
+    if (Mute5==0 && Music > 0 && Music < 102){
       analogSliderValues[4]=Music*10;
         leds[0] = CRGB::Green;
    }
-    else if (musicMute ==0 && (Music > 102 || Music==102)){
+    else if (Mute5 ==0 && (Music > 102 || Music==102)){
         analogSliderValues[4]=102*10;
-        knobMusic.write(102);
+        knob5.write(102);
           leds[0] = CRGB::Green;
     }
-    else if (musicMute==1){
+    else if (Mute5==1){
         analogSliderValues[4]=0;
           leds[0] = CRGB::Red;
     }
     else {
         analogSliderValues[4]=0;
-        knobMusic.write(0);
+        knob5.write(0);
           leds[0] = CRGB::Red;
     }
   // FastLED.show();
