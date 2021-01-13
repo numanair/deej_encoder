@@ -16,9 +16,11 @@ Bill of Materials:
 
 5x Click encoders (https://www.amazon.com/gp/product/B06XQTHDRR/)
 
-5x Neopixels (https://www.adafruit.com/product/1612)
+5x Neopixels or WS2812B (https://www.adafruit.com/product/1612)
 
-1x Arduino MkrZero (https://store.arduino.cc/usa/arduino-mkrzero)
+~~1x Arduino MkrZero (https://store.arduino.cc/usa/arduino-mkrzero)~~
+
+1x ESP32 dev kit board (30 pin version is enough)
 
 ~30x Jumper Cables Male to Female (https://www.amazon.com/Elegoo-EL-CP-004-Multicolored-Breadboard-arduino/dp/B01EV70C78/)
 
