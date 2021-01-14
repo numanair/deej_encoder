@@ -7,7 +7,7 @@
 // LED control pin:
 #define DATA_PIN 2
 #define ledBrightness 50
-#define minHue 12
+#define minHue 14
 #define maxHue 102
 #define colorCorrectionMode Typical8mmPixel
 CRGB leds[NUM_LEDS];
@@ -16,12 +16,8 @@ const int NUM_SLIDERS = 5;
 int analogSliderValues[NUM_SLIDERS];
 
 // avoid using pins with LEDs attached
-// buttons:
-const int button1_pin = 27;
-const int button2_pin = 33;
-const int button3_pin = 35;
-const int button4_pin = 32;
-const int button5_pin = 34;
+// buttons pins:
+const int button_pin[NUM_SLIDERS] = {27, 33, 35, 32, 34};
 
 ESP32Encoder encoder1;
 ESP32Encoder encoder2;
@@ -29,14 +25,9 @@ ESP32Encoder encoder3;
 ESP32Encoder encoder4;
 ESP32Encoder encoder5;
 
+int knobState[NUM_SLIDERS];
+int Mute[NUM_SLIDERS];
 int Master, Discord, Chrome, Gaming, Music;
-int Mute1, Mute2, Mute3, Mute4, Mute5;
-
-int knob1State = 0;
-int knob2State = 0;
-int knob3State = 0;
-int knob4State = 0;
-int knob5State = 0;
 
 void setup() {
     LEDS.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS)
@@ -51,33 +42,18 @@ void setup() {
     encoder3.attachHalfQuad(25, 26);
     encoder4.attachHalfQuad(19, 21);
     encoder5.attachHalfQuad(22, 23);
-    encoder1.clearCount();
-    encoder2.clearCount();
-    encoder3.clearCount();
-    encoder4.clearCount();
-    encoder5.clearCount();
-
-    pinMode(button1_pin, INPUT_PULLUP);
-    pinMode(button2_pin, INPUT_PULLUP);
-    pinMode(button3_pin, INPUT_PULLUP);
-    pinMode(button4_pin, INPUT_PULLUP);
-    pinMode(button5_pin, INPUT_PULLUP);
 
     for (int i = 0; i < NUM_SLIDERS; i++) {
         analogSliderValues[i] = 512;
+        pinMode(button_pin[i], INPUT_PULLUP);
+        knobState[i] = 0;
+        Mute[i] = 0;
     }
-
     encoder1.setCount(51);
     encoder2.setCount(51);
     encoder3.setCount(51);
     encoder4.setCount(51);
     encoder5.setCount(51);
-
-    Mute1 = 0;
-    Mute2 = 0;
-    Mute3 = 0;
-    Mute4 = 0;
-    Mute5 = 0;
 }
 
 void loop() {
@@ -122,97 +98,67 @@ void printSliderValues() {
     }
 }
 void checkButtons() {
-    if (digitalRead(button1_pin) == 0 && knob1State == 0) {
-        Mute1 = !Mute1;
-        knob1State = 1;
-        delay(25);
-    }
-    if (digitalRead(button1_pin) == 1) {
-        knob1State = 0;
-    }
-    if (digitalRead(button2_pin) == 0 && knob2State == 0) {
-        Mute2 = !Mute2;
-        knob2State = 1;
-        delay(25);
-    }
-    if (digitalRead(button2_pin) == 1) {
-        knob2State = 0;
-    }
-    if (digitalRead(button3_pin) == 0 && knob3State == 0) {
-        Mute3 = !Mute3;
-        knob3State = 1;
-        delay(25);
-    }
-    if (digitalRead(button3_pin) == 1) {
-        knob3State = 0;
-    }
-    if (digitalRead(button4_pin) == 0 && knob4State == 0) {
-        Mute4 = !Mute4;
-        knob4State = 1;
-        delay(25);
-    }
-    if (digitalRead(button4_pin) == 1) {
-        knob4State = 0;
-    }
-    if (digitalRead(button5_pin) == 0 && knob5State == 0) {
-        Mute5 = !Mute5;
-        knob5State = 1;
-        delay(25);
-    }
-    if (digitalRead(button5_pin) == 1) {
-        knob5State = 0;
+    for (int i = 0; i < NUM_SLIDERS; i++) {
+        if (digitalRead(button_pin[i]) == 0 && knobState[i] == 0) {
+            Mute[i] = !Mute[i];
+            knobState[i] = {1};
+            delay(25);
+        }
+        if (digitalRead(button_pin[i]) == 1) {
+            knobState[i] = {0};
+        }
     }
 }
 void checkEncoders() {
     // Master (encoder1)
-    if (Master > 0 && Master < 102 && Mute1 == 0) {
+    if (Master > 0 && Master < 102 && Mute[0] == 0) {
         // Normal volume levels
         analogSliderValues[0] = Master * 10;
         int encoder1toLedHue = map(Master, 0, 102, minHue, maxHue);
-        leds[4].setHue(encoder1toLedHue);
-    } else if (Mute1 == 0 && (Master > 102 || Master == 102)) {
+        leds[0].setHue(encoder1toLedHue);
+    } else if (Mute[0] == 0 && (Master > 102 || Master == 102)) {
         analogSliderValues[0] = 102 * 10;
         encoder1.setCount(102);
-        leds[4].setHue(maxHue);
-    } else if (Mute1 == 1) {
+        leds[0].setHue(maxHue);
+    } else if (Mute[0] == 1) {
         analogSliderValues[0] = 0;
-        leds[4] = CRGB::Red;
+        leds[0] = CRGB::Red;
     } else {
         analogSliderValues[0] = 0;
         encoder1.setCount(0);
-        leds[4] = CRGB::Red;
+        leds[0] = CRGB::Red;
     }
     // End of Master (encoder1)
 
     // Discord (encoder2)
-    if (Discord > 0 && Discord < 102 && Mute2 == 0) {
+    if (Discord > 0 && Discord < 102 && Mute[1] == 0) {
         analogSliderValues[1] = Discord * 10;
         int encoder2toLedHue = map(Discord, 0, 102, minHue, maxHue);
-        leds[3].setHue(encoder2toLedHue);
-    } else if (Mute2 == 0 && (Discord > 102 || Discord == 102)) {
+        leds[1].setHue(encoder2toLedHue);
+    } else if (Mute[1] == 0 && (Discord > 102 || Discord == 102)) {
         analogSliderValues[1] = 102 * 10;
         encoder2.setCount(102);
-        leds[3].setHue(maxHue);
-    } else if (Mute2 == 1) {
+        leds[1].setHue(maxHue);
+    } else if (Mute[1] == 1) {
         analogSliderValues[1] = 0;
-        leds[3] = CRGB::Red;
+        leds[1] = CRGB::Red;
     } else {
         analogSliderValues[1] = 0;
         encoder2.setCount(0);
-        leds[3] = CRGB::Red;
+        leds[1] = CRGB::Red;
     }
     // End of Discord (encoder2)
 
     // Chrome (encoder3)
-    if (Chrome > 0 && Chrome < 102 && Mute3 == 0) {
+    if (Chrome > 0 && Chrome < 102 && Mute[2] == 0) {
         analogSliderValues[2] = Chrome * 10;
         int encoder3toLedHue = map(Chrome, 0, 102, minHue, maxHue);
         leds[2].setHue(encoder3toLedHue);
-    } else if (Mute3 == 0 && (Chrome > 102 || Chrome == 102)) {
+    } else if (Mute[2] == 0 && (Chrome > 102 || Chrome == 102)) {
         analogSliderValues[2] = 102 * 10;
         encoder3.setCount(102);
         leds[2].setHue(maxHue);
-    } else if (Mute3 == 1) {
+    } else if (Mute[2] == 1) {
         analogSliderValues[2] = 0;
         leds[2] = CRGB::Red;
     } else {
@@ -223,40 +169,40 @@ void checkEncoders() {
     // End of Chrome (encoder3)
 
     // Gaming (encoder4)
-    if (Gaming > 0 && Gaming < 102 && Mute4 == 0) {
+    if (Gaming > 0 && Gaming < 102 && Mute[3] == 0) {
         analogSliderValues[3] = Gaming * 10;
         int encoder4toLedHue = map(Gaming, 0, 102, minHue, maxHue);
-        leds[1].setHue(encoder4toLedHue);
-    } else if (Mute4 == 0 && (Gaming > 102 || Gaming == 102)) {
+        leds[3].setHue(encoder4toLedHue);
+    } else if (Mute[3] == 0 && (Gaming > 102 || Gaming == 102)) {
         analogSliderValues[3] = 102 * 10;
         encoder4.setCount(102);
-        leds[1].setHue(maxHue);
-    } else if (Mute4 == 1) {
+        leds[3].setHue(maxHue);
+    } else if (Mute[3] == 1) {
         analogSliderValues[3] = 0;
-        leds[1] = CRGB::Red;
+        leds[3] = CRGB::Red;
     } else {
         analogSliderValues[3] = 0;
         encoder4.setCount(0);
-        leds[1] = CRGB::Red;
+        leds[3] = CRGB::Red;
     }
     // End of Gaming (encoder4)
 
     // Music (encoder5)
-    if (Music > 0 && Music < 102 && Mute5 == 0) {
+    if (Music > 0 && Music < 102 && Mute[4] == 0) {
         analogSliderValues[4] = Music * 10;
         int encoder5toLedHue = map(Music, 0, 102, minHue, maxHue);
-        leds[0].setHue(encoder5toLedHue);
-    } else if (Mute5 == 0 && (Music > 102 || Music == 102)) {
+        leds[4].setHue(encoder5toLedHue);
+    } else if (Mute[4] == 0 && (Music > 102 || Music == 102)) {
         analogSliderValues[4] = 102 * 10;
         encoder5.setCount(102);
-        leds[0].setHue(maxHue);
-    } else if (Mute5 == 1) {
+        leds[4].setHue(maxHue);
+    } else if (Mute[4] == 1) {
         analogSliderValues[4] = 0;
-        leds[0] = CRGB::Red;
+        leds[4] = CRGB::Red;
     } else {
         analogSliderValues[4] = 0;
         encoder5.setCount(0);
-        leds[0] = CRGB::Red;
+        leds[4] = CRGB::Red;
     }
     // End of Music (encoder5)
 }
