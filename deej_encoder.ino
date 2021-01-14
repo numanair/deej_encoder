@@ -9,6 +9,7 @@
 #define ledBrightness 50
 #define minHue 14
 #define maxHue 102
+#define mutecolor Red
 #define colorCorrectionMode Typical8mmPixel
 CRGB leds[NUM_LEDS];
 
@@ -122,11 +123,11 @@ void checkEncoders() {
         leds[0].setHue(maxHue);
     } else if (Mute[0] == 1) {
         analogSliderValues[0] = 0;
-        leds[0] = CRGB::Red;
+        leds[0] = CRGB::mutecolor;
     } else {
         analogSliderValues[0] = 0;
         encoder1.setCount(0);
-        leds[0] = CRGB::Red;
+        leds[0] = CRGB::mutecolor;
     }
     // End of Master (encoder1)
 
@@ -141,11 +142,11 @@ void checkEncoders() {
         leds[1].setHue(maxHue);
     } else if (Mute[1] == 1) {
         analogSliderValues[1] = 0;
-        leds[1] = CRGB::Red;
+        leds[1] = CRGB::mutecolor;
     } else {
         analogSliderValues[1] = 0;
         encoder2.setCount(0);
-        leds[1] = CRGB::Red;
+        leds[1] = CRGB::mutecolor;
     }
     // End of Discord (encoder2)
 
@@ -160,11 +161,11 @@ void checkEncoders() {
         leds[2].setHue(maxHue);
     } else if (Mute[2] == 1) {
         analogSliderValues[2] = 0;
-        leds[2] = CRGB::Red;
+        leds[2] = CRGB::mutecolor;
     } else {
         analogSliderValues[2] = 0;
         encoder3.setCount(0);
-        leds[2] = CRGB::Red;
+        leds[2] = CRGB::mutecolor;
     }
     // End of Chrome (encoder3)
 
@@ -179,11 +180,11 @@ void checkEncoders() {
         leds[3].setHue(maxHue);
     } else if (Mute[3] == 1) {
         analogSliderValues[3] = 0;
-        leds[3] = CRGB::Red;
+        leds[3] = CRGB::mutecolor;
     } else {
         analogSliderValues[3] = 0;
         encoder4.setCount(0);
-        leds[3] = CRGB::Red;
+        leds[3] = CRGB::mutecolor;
     }
     // End of Gaming (encoder4)
 
@@ -198,11 +199,11 @@ void checkEncoders() {
         leds[4].setHue(maxHue);
     } else if (Mute[4] == 1) {
         analogSliderValues[4] = 0;
-        leds[4] = CRGB::Red;
+        leds[4] = CRGB::mutecolor;
     } else {
         analogSliderValues[4] = 0;
         encoder5.setCount(0);
-        leds[4] = CRGB::Red;
+        leds[4] = CRGB::mutecolor;
     }
     // End of Music (encoder5)
 }
