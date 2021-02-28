@@ -4,9 +4,9 @@
 
 // LED setup:
 // Number of LEDs (generally same as NUM_SLIDERS):
-#define NUM_LEDS 1
+#define NUM_LEDS 5
 // LED control pin:
-#define DATA_PIN 27
+#define DATA_PIN 2
 #define ledBrightness 50
 #define minHue 14
 #define maxHue 102
@@ -14,12 +14,12 @@
 #define colorCorrectionMode Typical8mmPixel
 CRGB leds[NUM_LEDS];
 
-const int NUM_SLIDERS = 1;
+const int NUM_SLIDERS = 5;
 int analogSliderValues[NUM_SLIDERS];
 
 // avoid using pins with LEDs attached
 // buttons pins:
-const int button_pin[NUM_SLIDERS] = {34};
+const int button_pin[NUM_SLIDERS] = {27, 33, 35, 32, 34};
 
 ESP32Encoder encoder[NUM_SLIDERS];
 
@@ -42,12 +42,11 @@ void setup() {
 
     ESP32Encoder::useInternalWeakPullResistors = UP;
     // set encoder pins A & B (CLK & DT) here:
-    encoder[0].attachHalfQuad(12, 14);
-    // encoder[0].attachHalfQuad(15, 16);
-    // encoder[1].attachHalfQuad(17, 18);
-    // encoder[2].attachHalfQuad(25, 26);
-    // encoder[3].attachHalfQuad(19, 21);
-    // encoder[4].attachHalfQuad(22, 23);
+    encoder[0].attachHalfQuad(15, 16);
+    encoder[1].attachHalfQuad(17, 18);
+    encoder[2].attachHalfQuad(25, 26);
+    encoder[3].attachHalfQuad(19, 21);
+    encoder[4].attachHalfQuad(22, 23);
 
     for (int i = 0; i < NUM_SLIDERS; i++) {
         analogSliderValues[i] = 512;
