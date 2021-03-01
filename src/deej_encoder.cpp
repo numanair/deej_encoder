@@ -20,6 +20,7 @@ int analogSliderValues[NUM_SLIDERS];
 // avoid using pins with LEDs attached
 // buttons pins:
 const int button_pin[NUM_SLIDERS] = {27, 33, 35, 32, 34};
+int encodertoLedHue[NUM_SLIDERS];
 
 ESP32Encoder encoder[NUM_SLIDERS];
 
@@ -107,11 +108,11 @@ void checkButtons() {
     for (int i = 0; i < NUM_SLIDERS; i++) {
         if (digitalRead(button_pin[i]) == 0 && knobState[i] == 0) {
             Mute[i] = !Mute[i];
-            knobState[i] = {1};
+            knobState[i] = 1;
             delay(25);
         }
         if (digitalRead(button_pin[i]) == 1) {
-            knobState[i] = {0};
+            knobState[i] = 0;
         }
     }
 }
@@ -121,18 +122,21 @@ void checkEncoders() {
         if (knobVal[i] > 0 && knobVal[i] < 102 && Mute[0] == 0) {
             // Normal volume levels
             analogSliderValues[i] = knobVal[i] * 10;
-            int encodertoLedHue[i] = {map(knobVal[i], 0, 102, minHue, maxHue)};
+            encodertoLedHue[i] = map(knobVal[i], 0, 102, minHue, maxHue);
             leds[i].setHue(encodertoLedHue[i]);
-        } else if (Mute[i] == 0 && (knobVal[i] > 102 || knobVal[i] == 102)) {
+        }
+        else if (Mute[i] == 0 && (knobVal[i] > 102 || knobVal[i] == 102)) {
             // constrain to max volume
             analogSliderValues[i] = 102 * 10;
             encoder[i].setCount(102);
             leds[i].setHue(maxHue);
-        } else if (Mute[i] == 1) {
+        }
+        else if (Mute[i] == 1) {
             // is muted, output volume of 0
             analogSliderValues[i] = 0;
             leds[i] = CRGB::mutecolor;
-        } else {
+        }
+        else {
             // not muted, but volume = 0
             analogSliderValues[i] = 0;
             encoder[i].setCount(0);
