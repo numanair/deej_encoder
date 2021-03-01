@@ -121,22 +121,20 @@ void checkEncoders() {
     for (int i = 0; i < NUM_SLIDERS; i++) {
         if (knobVal[i] > 0 && knobVal[i] < 102 && Mute[0] == 0) {
             // Normal volume levels
-            analogSliderValues[i] = knobVal[i] * 10;
+            analogSliderValues[i] = map(knobVal[i], 0, 102, 0, 1023);
+            // analogSliderValues[i] = knobVal[i] * 10;
             encodertoLedHue[i] = map(knobVal[i], 0, 102, minHue, maxHue);
             leds[i].setHue(encodertoLedHue[i]);
-        }
-        else if (Mute[i] == 0 && (knobVal[i] > 102 || knobVal[i] == 102)) {
+        } else if (Mute[i] == 0 && (knobVal[i] > 102 || knobVal[i] == 102)) {
             // constrain to max volume
-            analogSliderValues[i] = 102 * 10;
+            analogSliderValues[i] = 1023;
             encoder[i].setCount(102);
             leds[i].setHue(maxHue);
-        }
-        else if (Mute[i] == 1) {
+        } else if (Mute[i] == 1) {
             // is muted, output volume of 0
             analogSliderValues[i] = 0;
             leds[i] = CRGB::mutecolor;
-        }
-        else {
+        } else {
             // not muted, but volume = 0
             analogSliderValues[i] = 0;
             encoder[i].setCount(0);
