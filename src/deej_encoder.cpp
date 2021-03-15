@@ -122,10 +122,9 @@ void checkEncoders() {
         if (knobVal[i] > 0 && knobVal[i] < 102 && Mute[i] == 0) {
             // Normal volume levels
             analogSliderValues[i] = map(knobVal[i], 0, 102, 0, 1023);
-            // analogSliderValues[i] = knobVal[i] * 10;
             encodertoLedHue[i] = map(knobVal[i], 0, 102, minHue, maxHue);
             leds[i].setHue(encodertoLedHue[i]);
-        } else if (Mute[i] == 0 && (knobVal[i] > 102 || knobVal[i] == 102)) {
+        } else if (Mute[i] == 0 && (knobVal[i] >= 102)) {
             // constrain to max volume
             analogSliderValues[i] = 1023;
             encoder[i].setCount(102);
