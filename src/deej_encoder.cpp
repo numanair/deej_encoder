@@ -119,7 +119,7 @@ void checkButtons() {
 
 void checkEncoders() {
     for (int i = 0; i < NUM_SLIDERS; i++) {
-        if (knobVal[i] > 0 && knobVal[i] < 102 && Mute[0] == 0) {
+        if (knobVal[i] > 0 && knobVal[i] < 102 && Mute[i] == 0) {
             // Normal volume levels
             analogSliderValues[i] = map(knobVal[i], 0, 102, 0, 1023);
             // analogSliderValues[i] = knobVal[i] * 10;
