@@ -2,31 +2,28 @@
 #include <ESP32Encoder.h>
 #include <FastLED.h>
 
+const int NUM_SLIDERS = 5;
+const int NUM_LEDS = NUM_SLIDERS; // Number of LEDs (generally same as NUM_SLIDERS)
+
+// avoid using pins with LEDs attached. GPIO 34, 35, 36 and 39 lack built-in pull-up.
+// buttons pins:
+const int button_pin[NUM_SLIDERS] = {32, 33, 25, 26, 27};
+int encodertoLedHue[NUM_SLIDERS];
+int analogSliderValues[NUM_SLIDERS];
+
 // LED setup:
-// Number of LEDs (generally same as NUM_SLIDERS):
-#define NUM_LEDS 5
 // LED control pin:
 #define DATA_PIN 2
-#define ledBrightness 50
+#define ledBrightness 10
 #define minHue 14
 #define maxHue 102
 #define mutecolor Red
 #define colorCorrectionMode Typical8mmPixel
 CRGB leds[NUM_LEDS];
 
-const int NUM_SLIDERS = 5;
-int analogSliderValues[NUM_SLIDERS];
-
-// avoid using pins with LEDs attached
-// buttons pins:
-const int button_pin[NUM_SLIDERS] = {27, 33, 35, 32, 34};
-int encodertoLedHue[NUM_SLIDERS];
-
 ESP32Encoder encoder[NUM_SLIDERS];
-
 int knobState[NUM_SLIDERS];
 int Mute[NUM_SLIDERS];
-// int Master, Discord, Chrome, Gaming, Music;
 int knobVal[NUM_SLIDERS];
 
 void sendSliderValues();
@@ -43,11 +40,11 @@ void setup() {
 
     ESP32Encoder::useInternalWeakPullResistors = UP;
     // set encoder pins A & B (CLK & DT) here:
-    encoder[0].attachHalfQuad(15, 16);
-    encoder[1].attachHalfQuad(17, 18);
-    encoder[2].attachHalfQuad(25, 26);
-    encoder[3].attachHalfQuad(19, 21);
-    encoder[4].attachHalfQuad(22, 23);
+    encoder[0].attachHalfQuad(23, 22);
+    encoder[1].attachHalfQuad(3, 21);
+    encoder[2].attachHalfQuad(19, 18);
+    encoder[3].attachHalfQuad(5, 17);
+    encoder[4].attachHalfQuad(16, 4);
 
     for (int i = 0; i < NUM_SLIDERS; i++) {
         analogSliderValues[i] = 512;
