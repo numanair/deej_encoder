@@ -13,8 +13,8 @@ int analogSliderValues[NUM_SLIDERS];
 
 // LED setup:
 // LED control pin:
+const int ledBrightness = 255; //0-255
 #define DATA_PIN 2
-#define ledBrightness 10
 #define minHue 14
 #define maxHue 102
 #define mutecolor Red
@@ -39,12 +39,12 @@ void setup() {
     Serial.begin(9600);
 
     ESP32Encoder::useInternalWeakPullResistors = UP;
-    // set encoder pins A & B (CLK & DT) here:
-    encoder[0].attachHalfQuad(23, 22);
-    encoder[1].attachHalfQuad(3, 21);
-    encoder[2].attachHalfQuad(19, 18);
-    encoder[3].attachHalfQuad(5, 17);
-    encoder[4].attachHalfQuad(16, 4);
+    // set encoder pins A & B (CLK & DT). Swap them if they are backwards:
+    encoder[0].attachHalfQuad(22, 23);
+    encoder[1].attachHalfQuad(21, 3);
+    encoder[2].attachHalfQuad(18, 19);
+    encoder[3].attachHalfQuad(17, 5);
+    encoder[4].attachHalfQuad(4, 16);
 
     for (int i = 0; i < NUM_SLIDERS; i++) {
         analogSliderValues[i] = 512;
@@ -59,11 +59,6 @@ void loop() {
     for (int i = 0; i < NUM_SLIDERS; i++) {
         knobVal[i] = encoder[i].getCount();
     }
-    // Master = encoder1.getCount(); //replaced with knobVal
-    // Discord = encoder2.getCount();
-    // Chrome = encoder3.getCount();
-    // Gaming = encoder4.getCount();
-    // Music = encoder5.getCount();
 
     checkButtons();
     checkEncoders();
